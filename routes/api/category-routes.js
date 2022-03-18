@@ -14,10 +14,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const categoryData = await Category.findByPk(req.params.id, {
-      // JOIN with locations, using the Trip through table
-      include: [{ model: Product, as: 'product_category' }]
-    });
+    const categoryData = await Category.findByPk(req.params.id);
 
     if (!categoryData) {
       res.status(404).json({ message: 'No category found with this id!' });
@@ -41,11 +38,17 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
+  try{
   // update a category by its `id` value
   const categoryData = await Category.update(req.body, {
     where:{
       id: req.params.id
-    }})
+    }});
+    res.status(200).json(categoryData)
+  }
+  catch(err) {
+    res.status(400).json(err);
+  }
 });
 
 router.delete('/:id', async (req, res) => {
